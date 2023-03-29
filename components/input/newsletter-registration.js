@@ -1,12 +1,28 @@
-import classes from './newsletter-registration.module.css';
+import { useRef, useState } from "react"
+import classes from "./newsletter-registration.module.css"
 
 function NewsletterRegistration() {
-  function registrationHandler(event) {
-    event.preventDefault();
+  const [notification, setNotification] = useState(null)
+  const emailInputRef = useRef()
 
-    // fetch user input (state or refs)
-    // optional: validate input
-    // send valid data to API
+  function registrationHandler(event) {
+    event.preventDefault()
+
+    const reqBody = {
+      email: emailInputRef.current.value,
+    }
+
+    fetch("/api/newsletter", {
+      method: "POST",
+      body: JSON.stringify(reqBody),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setNotification(data.message))
+      .then(() => (emailInputRef.current.value = ""))
+      .catch((err) => console.error(err))
   }
 
   return (
@@ -15,16 +31,18 @@ function NewsletterRegistration() {
       <form onSubmit={registrationHandler}>
         <div className={classes.control}>
           <input
-            type='email'
-            id='email'
-            placeholder='Your email'
-            aria-label='Your email'
+            type="email"
+            id="email"
+            placeholder="Your email"
+            aria-label="Your email"
+            ref={emailInputRef}
           />
           <button>Register</button>
         </div>
       </form>
+      {notification && <p>{notification}</p>}
     </section>
-  );
+  )
 }
 
-export default NewsletterRegistration;
+export default NewsletterRegistration

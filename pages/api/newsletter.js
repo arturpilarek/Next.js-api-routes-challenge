@@ -8,9 +8,9 @@ export default async (req, res) => {
     const newsletter = await db.collection("newsletter").find({}).toArray()
 
     if (req.method === "POST") {
-      const { email, name } = req.body
+      const { email } = req.body
 
-      if (!email || !email.includes("@") || !name || name.trim() === "") {
+      if (!email || !email.includes("@")) {
         res.status(422).json({ message: "Invalid input." })
         return
       }
@@ -22,11 +22,10 @@ export default async (req, res) => {
 
       const newSubscriber = await db.collection("newsletter").insertOne({
         email,
-        name,
         dateAdded: new Date().toISOString(),
       })
 
-      res.json(newSubscriber)
+      res.status(200).json({ message: "Success!" })
 
     } else if (req.method === "GET") {
         res.json(newsletter)

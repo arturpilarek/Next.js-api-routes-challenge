@@ -10,15 +10,15 @@ export default async (req, res) => {
     const newsletter = await db.collection("comments").find({}).toArray()
 
     if (req.method === "POST") {
-      const { email, name, comment } = req.body
+      const { email, name, text } = req.body
 
       if (
         !email ||
         !email.includes("@") ||
         !name ||
         name.trim() === "" ||
-        !comment ||
-        comment.trim() === ""
+        !text ||
+        text.trim() === ""
       ) {
         res.status(422).json({ message: "Invalid input." })
         return
@@ -27,7 +27,7 @@ export default async (req, res) => {
       const newComment = await db.collection("comments").insertOne({
         email,
         name,
-        comment,
+        text,
         eventId,
         dateAdded: new Date().toISOString(),
       })
