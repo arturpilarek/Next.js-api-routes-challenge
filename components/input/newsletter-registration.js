@@ -1,12 +1,21 @@
-import { useRef, useState } from "react"
+import { useContext, useRef, useState } from "react"
+import NotificationContext from "../../store/notification-context"
 import classes from "./newsletter-registration.module.css"
 
 function NewsletterRegistration() {
   const [notification, setNotification] = useState(null)
   const emailInputRef = useRef()
 
+  const notificationCtx = useContext(NotificationContext)
+
   function registrationHandler(event) {
     event.preventDefault()
+
+    notificationCtx.showNotification({
+      title: "Signing up...",
+      message: "Registering for newsletter.",
+      status: "pending",
+    })
 
     const reqBody = {
       email: emailInputRef.current.value,
@@ -21,8 +30,20 @@ function NewsletterRegistration() {
     })
       .then((res) => res.json())
       .then((data) => setNotification(data.message))
+      .then(() =>
+        notificationCtx.showNotification({
+          title: "Success!",
+          message: "Successfully registered for newsletter.",
+          status: "success",
+        })
+      )
       .then(() => (emailInputRef.current.value = ""))
-      .catch((err) => console.error(err))
+      .catch((err) => notificationCtx.showNotification({
+        title: "Error!",
+        message: err.message || "Something went wrong!",
+        status: "error",
+        })
+      )
   }
 
   return (

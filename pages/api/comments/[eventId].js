@@ -32,7 +32,7 @@ export default async (req, res) => {
         dateAdded: new Date().toISOString(),
       })
 
-      res.json(newComment)
+      res.status.json(newComment)
     } else if (req.method === "GET") {
         
       const comments = await db

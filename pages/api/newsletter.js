@@ -25,7 +25,7 @@ export default async (req, res) => {
         dateAdded: new Date().toISOString(),
       })
 
-      res.status(200).json({ message: "Success!" })
+      res.status(201).json({ message: "Success!" })
 
     } else if (req.method === "GET") {
         res.json(newsletter)
